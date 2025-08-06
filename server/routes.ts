@@ -7,11 +7,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Visitor routes
   app.post("/api/visitors", async (req, res) => {
     try {
+      console.log('Received visitor data:', req.body);
       const validatedData = insertVisitorSchema.parse(req.body);
+      console.log('Validated data:', validatedData);
       const visitor = await storage.createVisitor(validatedData);
+      console.log('Created visitor:', visitor);
       res.json(visitor);
     } catch (error) {
-      res.status(400).json({ message: "Invalid visitor data" });
+      console.error('Error creating visitor:', error);
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "Invalid visitor data" });
+      }
     }
   });
 

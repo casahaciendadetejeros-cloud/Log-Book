@@ -17,12 +17,25 @@ if (!getApps().length) {
       
       console.log('✅ Firebase initialized with service account credentials');
     } else {
-      // Fallback initialization without credentials (for development)
-      app = initializeApp({
-        projectId: 'touristlogbook',
-      });
-      
-      console.log('⚠️ Firebase initialized without credentials (development mode)');
+      // Try to read from file as fallback
+      try {
+        const fs = require('fs');
+        const serviceAccount = JSON.parse(fs.readFileSync('./firebase-key.json', 'utf8'));
+        
+        app = initializeApp({
+          credential: cert(serviceAccount),
+          projectId: 'touristlogbook',
+        });
+        
+        console.log('✅ Firebase initialized with file credentials');
+      } catch (fileError) {
+        // Last resort: initialize without credentials (for development)
+        app = initializeApp({
+          projectId: 'touristlogbook',
+        });
+        
+        console.log('⚠️ Firebase initialized without credentials (development mode)');
+      }
     }
   } catch (error) {
     console.error('❌ Firebase initialization failed:', error);

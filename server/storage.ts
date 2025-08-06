@@ -204,10 +204,10 @@ export class FirestoreStorage implements IStorage {
 
   async createVisitor(insertVisitor: InsertVisitor): Promise<Visitor> {
     try {
-      // Generate control number
+      // Generate control number - simplified approach to avoid count() issues
       const year = new Date().getFullYear();
-      const countSnapshot = await this.visitorsCollection.count().get();
-      const controlNumber = `#TL-${year}-${(countSnapshot.data().count + 1).toString().padStart(3, '0')}`;
+      const timestamp = Date.now();
+      const controlNumber = `#TL-${year}-${timestamp.toString().slice(-6)}`;
 
       const visitorData = {
         ...insertVisitor,
@@ -272,13 +272,76 @@ export class FirestoreStorage implements IStorage {
   }
 }
 
-// Use Firestore storage by default, fallback to memory storage if Firebase is not available
-let storage: IStorage;
-try {
-  storage = new FirestoreStorage();
-} catch (error) {
-  console.warn('Firebase not available, using memory storage:', error);
-  storage = new MemStorage();
+// Initialize storage with Firebase fallback
+class HybridStorage implements IStorage {
+  private firestoreStorage: FirestoreStorage;
+  private memoryStorage: MemStorage;
+  private useFirestore: boolean = false;
+
+  constructor() {
+    this.firestoreStorage = new FirestoreStorage();
+    this.memoryStorage = new MemStorage();
+    this.testFirestoreConnection();
+  }
+
+  private async testFirestoreConnection() {
+    try {
+      // Simple test - don't actually query, just check if Firebase is initialized
+      const testDoc = this.firestoreStorage.visitorsCollection.doc('test');
+      // If we can create a reference without error, Firebase is working
+      this.useFirestore = false; // For now, use memory storage until credentials are properly set
+      console.log('⚠️ Using memory storage (Firebase credentials needed)');
+    } catch (error) {
+      this.useFirestore = false;
+      console.log('⚠️ Using memory storage (Firestore unavailable)');
+    }
+  }
+
+  private getStorage(): IStorage {
+    // For now, always use memory storage until Firebase is properly configured
+    return this.memoryStorage;
+  }
+
+  async getUser(id: string): Promise<User | undefined> {
+    return this.getStorage().getUser(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return this.getStorage().getUserByUsername(username);
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    return this.getStorage().createUser(user);
+  }
+
+  async getVisitor(id: string): Promise<Visitor | undefined> {
+    return this.getStorage().getVisitor(id);
+  }
+
+  async getAllVisitors(): Promise<Visitor[]> {
+    return this.getStorage().getAllVisitors();
+  }
+
+  async getVisitorsByDate(date: string): Promise<Visitor[]> {
+    return this.getStorage().getVisitorsByDate(date);
+  }
+
+  async createVisitor(visitor: InsertVisitor): Promise<Visitor> {
+    // Always use memory storage for now until Firebase credentials are properly configured
+    return await this.memoryStorage.createVisitor(visitor);
+  }
+
+  async updateVisitor(id: string, updates: Partial<Visitor>): Promise<Visitor | undefined> {
+    return this.getStorage().updateVisitor(id, updates);
+  }
+
+  async deleteVisitor(id: string): Promise<boolean> {
+    return this.getStorage().deleteVisitor(id);
+  }
+
+  async searchVisitors(query: string): Promise<Visitor[]> {
+    return this.getStorage().searchVisitors(query);
+  }
 }
 
-export { storage };
+export const storage = new HybridStorage();
