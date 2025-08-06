@@ -26,10 +26,10 @@ Preferred communication style: Simple, everyday language.
 - **Development**: Hot reload with Vite integration in development mode
 
 ### Data Storage
-- **Database**: PostgreSQL with Drizzle ORM for database operations
-- **Schema**: Visitors table with auto-generated UUIDs and control numbers
-- **Migrations**: Drizzle Kit for database schema management
-- **Fallback**: In-memory storage implementation for development/testing
+- **Database**: Firebase Firestore with collections for visitors and users
+- **Schema**: Visitors collection with auto-generated control numbers and timestamps
+- **Authentication**: Firebase Admin SDK with service account authentication
+- **Fallback**: In-memory storage implementation if Firebase is unavailable
 
 ### Authentication and Authorization
 - Currently implements a basic user schema but authentication is not actively used
@@ -52,10 +52,10 @@ Preferred communication style: Simple, everyday language.
 
 ## External Dependencies
 
-### Database and ORM
-- **@neondatabase/serverless**: Neon PostgreSQL serverless driver
-- **drizzle-orm**: TypeScript ORM with PostgreSQL dialect
-- **drizzle-kit**: Database migration and schema management tools
+### Database and Cloud Services
+- **firebase**: Firebase client SDK for web applications
+- **firebase-admin**: Firebase Admin SDK for server-side operations
+- **Firestore**: NoSQL document database with real-time capabilities
 
 ### UI and Styling
 - **@radix-ui/react-***: Primitive UI components for accessibility
