@@ -93,10 +93,13 @@ export class MemStorage implements IStorage {
 
   async searchVisitors(query: string): Promise<Visitor[]> {
     const lowercaseQuery = query.toLowerCase();
+    // Remove spaces and special characters for phone number search
+    const cleanQuery = query.replace(/[\s\-\(\)\+]/g, '');
+    
     return Array.from(this.visitors.values()).filter((visitor) =>
       visitor.name.toLowerCase().includes(lowercaseQuery) ||
       visitor.email.toLowerCase().includes(lowercaseQuery) ||
-      visitor.phone.includes(query) ||
+      visitor.phone.replace(/[\s\-\(\)\+]/g, '').includes(cleanQuery) ||
       visitor.controlNumber.toLowerCase().includes(lowercaseQuery)
     );
   }

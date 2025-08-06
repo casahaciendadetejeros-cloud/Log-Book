@@ -6,12 +6,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import TouristRegistration from "@/pages/tourist-registration";
 import AdminDashboard from "@/pages/admin-dashboard";
-import { BookOpen, UserPlus, ChartLine } from "lucide-react";
+import AdminLogin from "@/pages/admin-login";
+import { BookOpen, UserPlus, ChartLine, LogOut } from "lucide-react";
 import { useState } from "react";
 
-function Navigation({ activeView, setActiveView }: { 
+function Navigation({ activeView, setActiveView, isLoggedIn, onLogout }: { 
   activeView: 'tourist' | 'admin', 
-  setActiveView: (view: 'tourist' | 'admin') => void 
+  setActiveView: (view: 'tourist' | 'admin') => void,
+  isLoggedIn: boolean,
+  onLogout: () => void
 }) {
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -46,6 +49,16 @@ function Navigation({ activeView, setActiveView }: {
               <ChartLine className="inline mr-2 h-4 w-4" />
               Admin Dashboard
             </button>
+            {isLoggedIn && activeView === 'admin' && (
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 rounded-lg font-medium border text-red-600 bg-red-50 border-red-300 hover:bg-red-100 transition-colors"
+                data-testid="button-logout"
+              >
+                <LogOut className="inline mr-2 h-4 w-4" />
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -55,10 +68,34 @@ function Navigation({ activeView, setActiveView }: {
 
 function Router() {
   const [activeView, setActiveView] = useState<'tourist' | 'admin'>('tourist');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setActiveView('tourist');
+  };
+
+  const handleViewChange = (view: 'tourist' | 'admin') => {
+    setActiveView(view);
+  };
+
+  // Show login page if admin is selected but not logged in
+  if (activeView === 'admin' && !isLoggedIn) {
+    return <AdminLogin onLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation activeView={activeView} setActiveView={setActiveView} />
+      <Navigation 
+        activeView={activeView} 
+        setActiveView={handleViewChange}
+        isLoggedIn={isLoggedIn}
+        onLogout={handleLogout}
+      />
       {activeView === 'tourist' ? <TouristRegistration /> : <AdminDashboard />}
     </div>
   );

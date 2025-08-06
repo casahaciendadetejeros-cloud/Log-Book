@@ -13,19 +13,33 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       // Remove all non-digits
       const digits = input.replace(/\D/g, "");
       
-      // Format based on length
-      if (digits.length >= 6) {
-        const formatted = digits.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-        return formatted.slice(0, 14); // Limit to formatted length
+      // Format for mobile: +63 9XX XXX XXXX (Philippine mobile format)
+      if (digits.length >= 10) {
+        if (digits.startsWith('63')) {
+          // Already has country code
+          const formatted = digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, "+$1 $2 $3 $4");
+          return formatted.slice(0, 16);
+        } else if (digits.startsWith('9')) {
+          // Mobile number without country code
+          const formatted = digits.replace(/(\d{1})(\d{2})(\d{3})(\d{4})/, "+63 $1$2 $3 $4");
+          return formatted.slice(0, 16);
+        }
+      } else if (digits.length >= 7) {
+        if (digits.startsWith('9')) {
+          return digits.replace(/(\d{1})(\d{2})(\d{0,3})/, "+63 $1$2 $3");
+        }
       } else if (digits.length >= 3) {
-        return digits.replace(/(\d{3})(\d{0,3})/, "($1) $2");
+        if (digits.startsWith('9')) {
+          return "+63 " + digits;
+        }
       }
-      return digits;
+      return digits.startsWith('9') ? "+63 " + digits : digits;
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formatted = formatPhoneNumber(e.target.value);
-      setIsValid(formatted.length === 14);
+      // Valid mobile number should be +63 9XX XXX XXXX (16 characters)
+      setIsValid(formatted.length === 16 && formatted.startsWith('+63 9'));
       
       // Create a synthetic event with formatted value
       const syntheticEvent = {
@@ -52,7 +66,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             <CheckCircle className="text-primary-green h-4 w-4" />
           </div>
         )}
-        <p className="mt-1 text-sm text-gray-500">Format: (123) 456-7890</p>
+        <p className="mt-1 text-sm text-gray-500">Format: +63 9XX XXX XXXX</p>
       </div>
     );
   }

@@ -63,7 +63,7 @@ export default function TouristRegistration() {
       <Card className="shadow-lg">
         <CardContent className="p-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Our Destination</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Casa Hacienda de Tejeros</h2>
             <p className="text-gray-600">Please register your visit by filling out the form below</p>
           </div>
 
@@ -101,7 +101,7 @@ export default function TouristRegistration() {
                     </FormLabel>
                     <FormControl>
                       <PhoneInput
-                        placeholder="(123) 456-7890"
+                        placeholder="+63 9XX XXX XXXX"
                         data-testid="input-phone"
                         {...field}
                       />
