@@ -9,9 +9,10 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import { BookOpen, UserPlus, ChartLine } from "lucide-react";
 import { useState } from "react";
 
-function Navigation() {
-  const [activeView, setActiveView] = useState<'tourist' | 'admin'>('tourist');
-
+function Navigation({ activeView, setActiveView }: { 
+  activeView: 'tourist' | 'admin', 
+  setActiveView: (view: 'tourist' | 'admin') => void 
+}) {
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,7 +58,7 @@ function Router() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
+      <Navigation activeView={activeView} setActiveView={setActiveView} />
       {activeView === 'tourist' ? <TouristRegistration /> : <AdminDashboard />}
     </div>
   );

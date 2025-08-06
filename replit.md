@@ -2,7 +2,7 @@
 
 ## Overview
 
-A full-stack web application for managing tourist visitor registrations with an admin dashboard for data management and reporting. The system provides two main interfaces: a tourist registration form where visitors can register themselves and receive a control number, and an admin dashboard for viewing, managing, and exporting visitor data. Built with a modern React frontend using shadcn/ui components and an Express.js backend with PostgreSQL database integration.
+A full-stack web application for managing tourist visitor registrations with an admin dashboard for data management and reporting. The system provides two main interfaces: a tourist registration form where visitors can register themselves and receive a control number, and an admin dashboard for viewing, managing, and exporting visitor data. Built with a modern React frontend using shadcn/ui components and an Express.js backend with PostgreSQL database integration. Features a green and red color scheme with comprehensive PDF export capabilities.
 
 ## User Preferences
 
