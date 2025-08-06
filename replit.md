@@ -38,11 +38,13 @@ Preferred communication style: Simple, everyday language.
 
 ### Key Features
 - **Tourist Registration**: Form with name, phone, and email validation
-- **Control Number Generation**: Automatic assignment of unique control numbers
+- **Control Number Generation**: Automatic assignment of unique control numbers (#TL-2025-XXX format)
 - **Admin Dashboard**: Data table with search, filtering, and pagination
 - **Data Export**: PDF generation for visitor reports
 - **Real-time Feedback**: Toast notifications for user actions
 - **Responsive Design**: Mobile-friendly interface using Tailwind CSS
+- **Firebase Deployment**: Ready for deployment to Firebase Hosting with Functions
+- **Live URL Access**: Deployable to public URLs for visitor access
 
 ### Component Architecture
 - **Modular UI Components**: Reusable shadcn/ui components with consistent styling
