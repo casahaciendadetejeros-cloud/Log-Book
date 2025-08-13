@@ -1,7 +1,7 @@
 import { onRequest } from 'firebase-functions/v2/https';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 
 // Initialize Firebase Admin
@@ -25,7 +25,7 @@ const app = express();
 app.use(express.json());
 
 // CORS middleware
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -75,7 +75,7 @@ app.get('/visitors', async (req, res) => {
       const snapshot = await query.get();
       const visitors = snapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(visitor => 
+        .filter((visitor: any) => 
           visitor.name?.toLowerCase().includes(search.toLowerCase()) ||
           visitor.phone?.includes(search) ||
           visitor.email?.toLowerCase().includes(search.toLowerCase()) ||

@@ -1,72 +1,72 @@
-import { forwardRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { CheckCircle } from "lucide-react";
+import { forwardRef } from "react";
+import PhoneInput2 from "react-phone-input-2";
+import "react-phone-input-2/lib/material.css";
 import { cn } from "@/lib/utils";
 
-interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface PhoneInputProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  className?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  "data-testid"?: string;
+}
 
 const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
-  ({ className, onChange, value, ...props }, ref) => {
-    const [isValid, setIsValid] = useState(false);
-
-    const formatPhoneNumber = (input: string) => {
-      // Remove all non-digits
-      const digits = input.replace(/\D/g, "");
-      
-      // Format for mobile: +63 9XX XXX XXXX (Philippine mobile format)
-      if (digits.length >= 10) {
-        if (digits.startsWith('63')) {
-          // Already has country code
-          const formatted = digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, "+$1 $2 $3 $4");
-          return formatted.slice(0, 16);
-        } else if (digits.startsWith('9')) {
-          // Mobile number without country code
-          const formatted = digits.replace(/(\d{1})(\d{2})(\d{3})(\d{4})/, "+63 $1$2 $3 $4");
-          return formatted.slice(0, 16);
-        }
-      } else if (digits.length >= 7) {
-        if (digits.startsWith('9')) {
-          return digits.replace(/(\d{1})(\d{2})(\d{0,3})/, "+63 $1$2 $3");
-        }
-      } else if (digits.length >= 3) {
-        if (digits.startsWith('9')) {
-          return "+63 " + digits;
-        }
-      }
-      return digits.startsWith('9') ? "+63 " + digits : digits;
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const formatted = formatPhoneNumber(e.target.value);
-      // Valid mobile number should be +63 9XX XXX XXXX (16 characters)
-      setIsValid(formatted.length === 16 && formatted.startsWith('+63 9'));
-      
-      // Create a synthetic event with formatted value
-      const syntheticEvent = {
-        ...e,
-        target: { ...e.target, value: formatted }
-      };
-      
-      if (onChange) {
-        onChange(syntheticEvent);
-      }
-    };
-
+  ({ value, onChange, className, placeholder, disabled, "data-testid": testId, ...props }, ref) => {
     return (
-      <div className="relative">
-        <Input
-          ref={ref}
-          className={cn("pr-10", className)}
+      <div className={cn("relative", className)}>
+        <PhoneInput2
+          country="ph"
           value={value}
-          onChange={handleChange}
+          onChange={onChange}
+          placeholder={placeholder || "Enter phone number"}
+          disabled={disabled}
+          data-testid={testId}
+          enableSearch={true}
+          searchPlaceholder="Search country..."
+          preferredCountries={["ph", "us", "gb"]}
+          countryCodeEditable={false}
+          autoFormat={true}
+          enableLongNumbers={true}
           {...props}
         />
-        {isValid && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-            <CheckCircle className="text-primary-green h-4 w-4" />
-          </div>
-        )}
-        <p className="mt-1 text-sm text-gray-500">Format: +63 9XX XXX XXXX</p>
+        <style>{`
+          .react-tel-input {
+            width: 100% !important;
+          }
+          .react-tel-input .form-control {
+            height: 48px !important;
+            font-size: 16px !important;
+            font-family: inherit !important;
+            border: 1px solid #5D9C59 !important;
+            border-radius: 6px !important;
+            width: 100% !important;
+          }
+          .react-tel-input .flag-dropdown {
+            border: 1px solid #5D9C59 !important;
+            border-right: none !important;
+            border-radius: 6px 0 0 6px !important;
+            height: 48px !important;
+          }
+          .react-tel-input .form-control:focus {
+            border-color: #5D9C59 !important;
+            box-shadow: 0 0 0 2px rgba(93, 156, 89, 0.2) !important;
+            outline: none !important;
+          }
+          .react-tel-input .flag-dropdown:focus-within {
+            border-color: #5D9C59 !important;
+          }
+          @media (min-width: 640px) {
+            .react-tel-input .form-control {
+              height: 56px !important;
+              font-size: 18px !important;
+            }
+            .react-tel-input .flag-dropdown {
+              height: 56px !important;
+            }
+          }
+        `}</style>
       </div>
     );
   }

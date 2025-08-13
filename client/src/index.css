@@ -13,24 +13,24 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(142, 76%, 36%);
+  --primary: #5D9C59;
   --primary-foreground: hsl(355, 7%, 97%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(142, 86%, 96%);
-  --accent-foreground: hsl(142, 76%, 36%);
-  --destructive: hsl(0, 84.2%, 60.2%);
+  --accent: #5D9C59;
+  --accent-foreground: hsl(355, 7%, 97%);
+  --destructive: #DF2E38;
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(142, 76%, 36%);
+  --ring: #5D9C59;
   --radius: 0.5rem;
   
-  /* Custom colors for green/red theme */
-  --primary-green: hsl(142, 76%, 36%);
-  --secondary-green: hsl(142, 71%, 45%);
-  --primary-red: hsl(0, 84%, 56%);
-  --secondary-red: hsl(0, 72%, 51%);
-  --light-green: hsl(142, 86%, 96%);
-  --light-red: hsl(0, 93%, 94%);
+  /* Custom colors for new theme */
+  --primary-green: #5D9C59;
+  --secondary-green: #4A7C47;
+  --primary-red: #DF2E38;
+  --secondary-red: #B8252E;
+  --light-green: #E8F5E8;
+  --light-red: #FDE8E9;
 }
 
 .dark {
@@ -44,13 +44,13 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 3.7%, 15.9%);
   --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(142, 76%, 36%);
+  --primary: #5D9C59;
   --primary-foreground: hsl(355, 7%, 97%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --accent: hsl(240, 3.7%, 15.9%);
   --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive: #DF2E38;
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(240, 4.9%, 83.9%);
   --radius: 0.5rem;
@@ -62,8 +62,25 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
   }
+}
+
+/* Navbar gradient */
+.navbar-gradient {
+  background: linear-gradient(to bottom, #5D9C59 90%, #DF2E38 10%);
+}
+
+/* Footer styling - solid green background with red top border */
+.footer-style {
+  background-color: #5D9C59;
+  border-top: 4px solid #DF2E38;
+}
+
+/* Background overlay for content areas */
+.bg-overlay {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 /* Custom utility classes */
@@ -116,9 +133,9 @@
 }
 
 .hover\:bg-green-700:hover {
-  background-color: hsl(142, 76%, 30%);
+  background-color: #4A7C47;
 }
 
 .hover\:bg-red-700:hover {
-  background-color: hsl(0, 84%, 50%);
+  background-color: #B8252E;
 }

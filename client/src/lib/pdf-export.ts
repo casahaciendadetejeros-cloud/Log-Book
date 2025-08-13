@@ -33,11 +33,13 @@ export function exportToPDF(visitors: Visitor[], filename: string = "visitor-log
   // Prepare table data
   const tableData = visitors.map(visitor => {
     const date = new Date(visitor.createdAt);
+    const contact = visitor.phone || visitor.email || 'N/A';
+    const purpose = visitor.purpose ? visitor.purpose.replace('_', ' ').toUpperCase() : 'N/A';
     return [
       visitor.controlNumber,
       visitor.name,
-      visitor.phone,
-      visitor.email,
+      contact,
+      purpose,
       date.toLocaleDateString(),
       date.toLocaleTimeString()
     ];
@@ -45,7 +47,7 @@ export function exportToPDF(visitors: Visitor[], filename: string = "visitor-log
 
   // Add table
   autoTable(doc, {
-    head: [['Control Number', 'Full Name', 'Phone Number', 'Email Address', 'Date', 'Time']],
+    head: [['Control Number', 'Full Name', 'Contact Info', 'Purpose', 'Date', 'Time']],
     body: tableData,
     startY: 85,
     styles: {
