@@ -25,8 +25,9 @@ export default function AdminLogin({ onLogin, onReturn }: AdminLoginProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Admin passkey - you can change this to your desired password
-  const ADMIN_PASSKEY = "Casahacienda1897";
+  // Use environment variable for admin passkey (temporary solution)
+  // TODO: Implement proper Firebase Authentication
+  const ADMIN_PASSKEY = import.meta.env.VITE_ADMIN_PASSKEY || "Casahacienda1897";
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),

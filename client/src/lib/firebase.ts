@@ -2,15 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, where, doc, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import type { Visitor, InsertVisitor, User, InsertUser } from '@shared/schema';
 
-// Firebase configuration
+// Firebase configuration - these are CLIENT-SAFE values
 const firebaseConfig = {
-  apiKey: "AIzaSyDFqT1CG7GA66bwZkjZsayc5YlQkUp-U08",
-  authDomain: "touristlogbook.firebaseapp.com",
-  projectId: "touristlogbook",
-  storageBucket: "touristlogbook.firebasestorage.app",
-  messagingSenderId: "337366190974",
-  appId: "1:337366190974:web:393efbeec645ba1866412f",
-  measurementId: "G-9S157H1N94"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDFqT1CG7GA66bwZkjZsayc5YlQkUp-U08",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "touristlogbook.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "touristlogbook",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "touristlogbook.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "337366190974",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:337366190974:web:393efbeec645ba1866412f",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-9S157H1N94"
 };
 
 // Initialize Firebase
