@@ -106,7 +106,7 @@ export default function TouristRegistration() {
       <Card className="shadow-xl bg-white/95 backdrop-blur-sm">
         <CardContent className="p-6 sm:p-8 lg:p-12">
           <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 lg:mb-4">Welcome to Tourism Office - Municipality of Rosario</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 lg:mb-4">Welcome to Casa Hacienda de Tejeros</h2>
             <p className="text-base sm:text-lg text-gray-600">Please register your visit by filling out the form below</p>
           </div>
 
@@ -125,7 +125,7 @@ export default function TouristRegistration() {
                       <Input
                         placeholder="Enter your full name"
                         data-testid="input-name"
-                        className="h-12 sm:h-14 text-base sm:text-lg"
+                        className="h-12 sm:h-14 md:text-xl text-lg sm:text-xl"
                         {...field}
                       />
                     </FormControl>
@@ -172,7 +172,7 @@ export default function TouristRegistration() {
                         type="email"
                         placeholder="your.email@example.com"
                         data-testid="input-email"
-                        className="h-12 sm:h-14 text-base sm:text-lg"
+                        className="h-12 sm:h-14 md:text-xl text-lg sm:text-xl"
                         {...field}
                       />
                     </FormControl>

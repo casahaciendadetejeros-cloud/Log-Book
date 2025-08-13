@@ -18,12 +18,12 @@ function Navigation({ activeView, setActiveView, isLoggedIn, onLogout }: {
   onLogout: () => void
 }) {
   return (
-    <nav className="navbar-gradient shadow-sm border-b border-gray-200">
+    <nav className="navbar-gradient shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20 sm:h-24">
           <div className="flex items-center">
             <img src="/images/rtc.png" alt="RTC Logo" className="h-8 sm:h-10 w-auto mr-2 sm:mr-3" />
-            <h1 className="text-sm sm:text-xl font-semibold text-white">
+            <h1 className="text-sm md:text-xl sm:text-xl font-semibold text-white">
               <span className="hidden md:inline">Tourism Office - Municipality of Rosario</span>
               <span className="md:hidden">Tourism Office - Rosario</span>
             </h1>
@@ -31,38 +31,38 @@ function Navigation({ activeView, setActiveView, isLoggedIn, onLogout }: {
           <div className="flex space-x-4">
             <button
               onClick={() => setActiveView('tourist')}
-              className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium border transition-colors text-sm sm:text-base ${
+              className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base flex items-center shadow-lg ${
                 activeView === 'tourist'
-                  ? 'text-white bg-primary-green border-white'
-                  : 'text-white bg-white/20 border-white/30 hover:bg-white/30'
+                  ? 'text-white bg-primary-green border-2 border-white/50 shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_8px_rgba(0,0,0,0.2)] transform scale-95'
+                  : 'text-white bg-white/20 border-2 border-white/40 hover:bg-white/30 shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.15)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] active:transform active:scale-95'
               }`}
               data-testid="button-tourist-view"
             >
-              <UserPlus className="inline mr-1 sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Tourist Registration</span>
-              <span className="sm:hidden">Tourist</span>
+              <UserPlus className="h-4 w-4 sm:mr-1 md:mr-2" />
+              <span className="hidden sm:inline md:hidden">Tourist</span>
+              <span className="hidden md:inline">Tourist Registration</span>
             </button>
             <button
               onClick={() => setActiveView('admin')}
-              className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium border transition-colors text-sm sm:text-base ${
+              className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base flex items-center shadow-lg ${
                 activeView === 'admin'
-                  ? 'text-white bg-primary-green border-white'
-                  : 'text-white bg-white/20 border-white/30 hover:bg-white/30'
+                  ? 'text-white bg-primary-green border-2 border-white/50 shadow-[inset_0_2px_4px_rgba(255,255,255,0.3),0_4px_8px_rgba(0,0,0,0.2)] transform scale-95'
+                  : 'text-white bg-white/20 border-2 border-white/40 hover:bg-white/30 shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.15)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] active:transform active:scale-95'
               }`}
               data-testid="button-admin-view"
             >
-              <ChartLine className="inline mr-1 sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Admin Dashboard</span>
-              <span className="sm:hidden">Admin</span>
+              <ChartLine className="h-4 w-4 sm:mr-1 md:mr-2" />
+              <span className="hidden sm:inline md:hidden">Admin</span>
+              <span className="hidden md:inline">Admin Dashboard</span>
             </button>
             {isLoggedIn && activeView === 'admin' && (
               <button
                 onClick={onLogout}
-                className="px-4 py-2 rounded-lg font-medium border text-white bg-primary-red border-white hover:bg-secondary-red transition-colors"
+                className="px-2 sm:px-3 md:px-4 py-2 rounded-lg font-medium text-white bg-primary-red border-2 border-white/50 hover:bg-secondary-red transition-all flex items-center shadow-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.15)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] active:transform active:scale-95"
                 data-testid="button-logout"
               >
-                <LogOut className="inline mr-2 h-4 w-4" />
-                Logout
+                <LogOut className="h-4 w-4 sm:mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </button>
             )}
           </div>

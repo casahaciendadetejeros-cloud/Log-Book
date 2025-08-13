@@ -19,6 +19,8 @@ export default function AdminDashboard() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch all visitors
   const { data: visitors = [], refetch: refetchVisitors, isLoading } = useQuery({
@@ -47,13 +49,33 @@ export default function AdminDashboard() {
   });
 
   // Determine which data to display
-  const displayVisitors = searchQuery ? searchResults : selectedDate ? dateResults : visitors;
+  const allDisplayVisitors = searchQuery ? searchResults : selectedDate ? dateResults : visitors;
+  
+  // Pagination calculations
+  const totalRecords = allDisplayVisitors.length;
+  const totalPages = Math.ceil(totalRecords / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayVisitors = allDisplayVisitors.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedDate, pageSize]);
 
   const handleExportPDF = () => {
-    exportToPDF(visitors, "visitor-log");
+    // Use all filtered data instead of just current page
+    const dataToExport = allDisplayVisitors;
+    const filename = selectedDate 
+      ? `visitor-log-${selectedDate}` 
+      : searchQuery 
+        ? `visitor-log-search-${searchQuery.replace(/[^a-zA-Z0-9]/g, '')}` 
+        : "visitor-log-all";
+    
+    exportToPDF(dataToExport, filename);
     toast({
       title: "PDF Export",
-      description: "Visitor log has been exported as PDF.",
+      description: `Exported ${dataToExport.length} visitor records as PDF.`,
     });
   };
 
@@ -74,6 +96,18 @@ export default function AdminDashboard() {
         });
       }
     }
+  };
+
+  const handleRefresh = () => {
+    // Reset all filters and refresh data
+    setSearchQuery("");
+    setSelectedDate("");
+    setCurrentPage(1);
+    refetchVisitors();
+    toast({
+      title: "Dashboard Refreshed",
+      description: "Data refreshed and filters cleared.",
+    });
   };
 
   const handleViewDetails = (visitor: Visitor) => {
@@ -257,7 +291,7 @@ export default function AdminDashboard() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => refetchVisitors()}
+                onClick={handleRefresh}
                 data-testid="button-refresh"
               >
                 <RefreshCw className="mr-2 h-4 w-4" />
@@ -339,6 +373,95 @@ export default function AdminDashboard() {
                 ))}
               </TableBody>
             </Table>
+          )}
+          
+          {/* Pagination Controls */}
+          {totalRecords > 0 && (
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mt-6 pt-6 border-t space-y-4 lg:space-y-0">
+              {/* Left: Records per page */}
+              <div className="flex flex-col sm:flex-row sm:items-baseline space-y-2 sm:space-y-0 sm:space-x-2 items-center sm:items-baseline">
+                <div className="flex items-center space-x-1 sm:space-x-2">
+                  <span className="text-xs sm:text-sm text-gray-700">Show</span>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => setPageSize(Number(e.target.value))}
+                    className="border border-gray-300 rounded px-1 sm:px-2 py-1 text-xs sm:text-sm min-w-0"
+                  >
+                    <option value={10}>10</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <span className="text-xs sm:text-sm text-gray-700 hidden sm:inline">records per page.</span>
+                  <span className="text-xs sm:text-sm text-gray-700 sm:hidden">per page</span>
+                </div>
+                <span className="text-xs sm:text-sm text-gray-700 text-center sm:text-left">
+                  Showing {startIndex + 1} to {Math.min(endIndex, totalRecords)} of {totalRecords} records.
+                </span>
+              </div>
+
+              {/* Right: Page navigation */}
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2 overflow-x-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+                >
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
+                </Button>
+                
+                {/* Page numbers */}
+                <div className="flex space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => {
+                      // Show fewer pages on mobile
+                      const maxDistance = window.innerWidth < 640 ? 1 : 2;
+                      return (
+                        page === 1 ||
+                        page === totalPages ||
+                        Math.abs(page - currentPage) <= maxDistance
+                      );
+                    })
+                    .map((page, index, array) => {
+                      // Add ellipsis if there's a gap
+                      const shouldShowEllipsis = index > 0 && array[index - 1] !== page - 1;
+                      
+                      return (
+                        <div key={page} className="flex items-center">
+                          {shouldShowEllipsis && (
+                            <span className="px-1 sm:px-2 text-gray-400 text-xs sm:text-sm">...</span>
+                          )}
+                          <Button
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setCurrentPage(page)}
+                            className={`px-2 sm:px-3 text-xs sm:text-sm min-w-0 ${
+                              currentPage === page 
+                                ? "bg-primary-green text-white hover:bg-green-700" 
+                                : ""
+                            }`}
+                          >
+                            {page}
+                          </Button>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <span className="sm:hidden">Next</span>
+                </Button>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>

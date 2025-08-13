@@ -90,14 +90,14 @@ export default function AdminLogin({ onLogin, onReturn }: AdminLoginProps) {
             <Button
               onClick={onReturn}
               variant="outline"
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+              className="bg-white/20 border-2 border-white/40 text-white hover:bg-white/30 backdrop-blur-sm transition-all shadow-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_1px_2px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.15)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] active:transform active:scale-95"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Return to Registration
             </Button>
           </div>
         )}
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 mt-16 sm:mt-20">
           <div className="flex flex-col items-center">
             <BookOpen className="text-white text-4xl" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
@@ -112,7 +112,7 @@ export default function AdminLogin({ onLogin, onReturn }: AdminLoginProps) {
               <CardHeader>
                 <CardTitle className="text-center">Enter Admin Passkey</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6 sm:p-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <FormField

@@ -61,8 +61,15 @@
     @apply border-border;
   }
 
-  body {
+  html, body {
     @apply font-sans antialiased text-foreground;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Remove any default margins and ensure seamless layout */
+  * {
+    box-sizing: border-box;
   }
 }
 
