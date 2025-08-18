@@ -21,6 +21,8 @@ export default function AdminDashboard() {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [visitorToDelete, setVisitorToDelete] = useState<Visitor | null>(null);
 
   // Fetch all visitors
   const { data: visitors = [], refetch: refetchVisitors, isLoading } = useQuery({
@@ -79,23 +81,36 @@ export default function AdminDashboard() {
     });
   };
 
-  const handleDeleteVisitor = async (id: string) => {
-    if (confirm("Are you sure you want to delete this visitor?")) {
-      const success = await visitorAPI.deleteVisitor(id);
-      if (success) {
-        toast({
-          title: "Visitor Deleted",
-          description: "Visitor has been successfully deleted.",
-        });
-        refetchVisitors();
-      } else {
-        toast({
-          title: "Delete Failed",
-          description: "Failed to delete visitor. Please try again.",
-          variant: "destructive",
-        });
-      }
+  const handleDeleteVisitor = (visitor: Visitor) => {
+    setVisitorToDelete(visitor);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!visitorToDelete) return;
+    
+    const success = await visitorAPI.deleteVisitor(visitorToDelete.id);
+    if (success) {
+      toast({
+        title: "Visitor Deleted",
+        description: "Visitor has been successfully deleted.",
+      });
+      refetchVisitors();
+    } else {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete visitor. Please try again.",
+        variant: "destructive",
+      });
     }
+    
+    setDeleteModalOpen(false);
+    setVisitorToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+    setVisitorToDelete(null);
   };
 
   const handleRefresh = () => {
@@ -166,7 +181,7 @@ export default function AdminDashboard() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleDeleteVisitor(row.id)}
+            onClick={() => handleDeleteVisitor(row)}
             className="text-primary-red hover:text-red-800"
             data-testid={`button-delete-${row.id}`}
           >
@@ -178,7 +193,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 mb-96">
+    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 max-[1360px]:px-10 mb-96">
       <div className="space-y-6">
       {/* Dashboard Header */}
       <div className="mb-8">
@@ -318,6 +333,7 @@ export default function AdminDashboard() {
                 <TableRow>
                   <TableHead>Control Number</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Gender</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Purpose</TableHead>
                   <TableHead>Date</TableHead>
@@ -329,6 +345,11 @@ export default function AdminDashboard() {
                   <TableRow key={visitor.id}>
                     <TableCell className="font-medium">{visitor.controlNumber}</TableCell>
                     <TableCell>{visitor.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="capitalize">
+                        {(visitor.gender || 'N/A').replaceAll('_', ' ')}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       {visitor.phone ? (
                         <div className="text-sm">
@@ -361,7 +382,7 @@ export default function AdminDashboard() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDeleteVisitor(visitor.id)}
+                          onClick={() => handleDeleteVisitor(visitor)}
                           className="text-primary-red hover:text-red-800"
                           data-testid={`button-delete-${visitor.id}`}
                         >
@@ -497,6 +518,14 @@ export default function AdminDashboard() {
                   </p>
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700">Gender</label>
+                  <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded" data-testid="text-modal-gender">
+                    <Badge variant="outline" className="capitalize">
+                      {(selectedVisitor.gender || 'Not specified').replaceAll('_', ' ')}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700">Contact Information</label>
                   <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded" data-testid="text-modal-contact">
                     {selectedVisitor.phone ? (
@@ -506,6 +535,14 @@ export default function AdminDashboard() {
                     ) : (
                       "No contact information provided"
                     )}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                  <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded" data-testid="text-modal-email">
+                    {selectedVisitor.email && selectedVisitor.email.trim().length > 0
+                      ? selectedVisitor.email
+                      : "Not provided"}
                   </p>
                 </div>
                 <div>
@@ -543,6 +580,68 @@ export default function AdminDashboard() {
                 >
                   <Download className="mr-2 h-4 w-4" />
                   Export PDF
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && visitorToDelete && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Confirm Delete</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={cancelDelete}
+                  data-testid="button-close-delete-modal"
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <Trash2 className="h-6 w-6 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Are you sure you want to delete this visitor?
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    This action cannot be undone. The visitor record will be permanently deleted.
+                  </p>
+                  
+                  <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                    <p className="text-sm font-medium text-gray-900">
+                      {visitorToDelete.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Control #: {visitorToDelete.controlNumber}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <Button 
+                  variant="outline"
+                  onClick={cancelDelete}
+                  data-testid="button-cancel-delete"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-red-600 text-white hover:bg-red-700"
+                  onClick={confirmDelete}
+                  data-testid="button-confirm-delete"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Visitor
                 </Button>
               </div>
             </div>

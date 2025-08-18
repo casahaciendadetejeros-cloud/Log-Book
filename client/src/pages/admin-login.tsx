@@ -98,7 +98,7 @@ export default function AdminLogin({ onLogin, onReturn }: AdminLoginProps) {
             </Button>
           </div>
         )}
-        <div className="w-full max-w-md mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 mt-16 sm:mt-20">
+        <div className="w-full max-w-md mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-[1360px]:px-10 mt-16 sm:mt-20">
           <div className="flex flex-col items-center">
             <BookOpen className="text-white text-4xl" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-white">

@@ -35,9 +35,11 @@ export function exportToPDF(visitors: Visitor[], filename: string = "visitor-log
     const date = new Date(visitor.createdAt);
     const contact = visitor.phone || visitor.email || 'N/A';
     const purpose = visitor.purpose ? visitor.purpose.replace('_', ' ').toUpperCase() : 'N/A';
+    const gender = visitor.gender ? visitor.gender.replace('_', ' ').toUpperCase() : 'N/A';
     return [
       visitor.controlNumber,
       visitor.name,
+      gender,
       contact,
       purpose,
       date.toLocaleDateString(),
@@ -47,7 +49,7 @@ export function exportToPDF(visitors: Visitor[], filename: string = "visitor-log
 
   // Add table
   autoTable(doc, {
-    head: [['Control Number', 'Full Name', 'Contact Info', 'Purpose', 'Date', 'Time']],
+    head: [['Control Number', 'Full Name', 'Gender', 'Contact Info', 'Purpose', 'Date', 'Time']],
     body: tableData,
     startY: 85,
     styles: {

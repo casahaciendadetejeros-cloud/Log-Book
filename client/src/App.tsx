@@ -19,7 +19,7 @@ function Navigation({ activeView, setActiveView, isLoggedIn, onLogout }: {
 }) {
   return (
     <nav className="navbar-gradient shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 max-[1360px]:px-10">
         <div className="flex justify-between items-center h-20 sm:h-24">
           <div className="flex items-center">
             <img src="/images/rtc.png" alt="RTC Logo" className="h-8 sm:h-10 w-auto mr-2 sm:mr-3" />

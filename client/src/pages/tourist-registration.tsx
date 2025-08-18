@@ -12,7 +12,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { useToast } from "@/hooks/use-toast";
 import { visitorAPI } from "@/lib/firebase";
 import { insertVisitorSchema } from "@shared/schema";
-import { User, Phone, Mail, Send, CheckCircle, Target } from "lucide-react";
+import { User, Phone, Mail, Send, CheckCircle, Target, Users } from "lucide-react";
 import type { InsertVisitor, Visitor } from "@shared/schema";
 
 const PURPOSE_OPTIONS = [
@@ -24,6 +24,12 @@ const PURPOSE_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
+const GENDER_OPTIONS = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "prefer_not_to_say", label: "Prefer not to say" },
+];
+
 export default function TouristRegistration() {
   const { toast } = useToast();
   const [successData, setSuccessData] = useState<Visitor | null>(null);
@@ -33,6 +39,7 @@ export default function TouristRegistration() {
     resolver: zodResolver(insertVisitorSchema),
     defaultValues: {
       name: "",
+      gender: undefined,
       phone: "",
       email: "",
       purpose: "",
@@ -102,7 +109,7 @@ export default function TouristRegistration() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 mb-96">
+    <div className="w-full max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-[1360px]:px-10 mb-96">
       <Card className="shadow-xl bg-white/95 backdrop-blur-sm">
         <CardContent className="p-6 sm:p-8 lg:p-12">
           <div className="text-center mb-8 lg:mb-12">
@@ -134,6 +141,33 @@ export default function TouristRegistration() {
                 )}
               />
 
+              {/* Gender Field */}
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center text-sm sm:text-base lg:text-lg font-medium text-gray-700">
+                      <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-primary-green" />
+                      Gender *
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="h-12 sm:h-14 text-base sm:text-lg">
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {GENDER_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* Phone Number Field */}
               <FormField
                 control={form.control}
@@ -142,7 +176,7 @@ export default function TouristRegistration() {
                   <FormItem>
                     <FormLabel className="flex items-center text-sm sm:text-base lg:text-lg font-medium text-gray-700">
                       <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-primary-green" />
-                      Phone Number
+                      Phone Number *
                     </FormLabel>
                     <FormControl>
                       <PhoneInput

@@ -7,6 +7,7 @@ export const visitors = pgTable("visitors", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   controlNumber: text("control_number").notNull().unique(),
   name: text("name").notNull(),
+  gender: text("gender").notNull(),
   phone: text("phone"),
   email: text("email"),
   purpose: text("purpose").notNull(),
@@ -16,12 +17,14 @@ export const visitors = pgTable("visitors", {
 // Custom schema for insert that requires either phone or email
 export const insertVisitorSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  phone: z.string().optional(),
-  email: z.string().email("Invalid email format").optional(),
+  gender: z.enum(["male", "female", "prefer_not_to_say"], {
+    required_error: "Please select your gender",
+  }),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().refine((val) => val === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+    message: "Invalid email format"
+  }).optional(),
   purpose: z.string().min(1, "Purpose of visit is required"),
-}).refine((data) => data.phone || data.email, {
-  message: "Either phone number or email address is required",
-  path: ["phone"], // This will show the error on the phone field
 });
 
 export type InsertVisitor = z.infer<typeof insertVisitorSchema>;
